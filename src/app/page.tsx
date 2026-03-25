@@ -1,62 +1,132 @@
 "use client";
 
 import { motion } from "motion/react";
-import { 
-  Github, 
-  Linkedin, 
-  Mail, 
-  ExternalLink, 
-  Code2, 
-  Cpu, 
-  Globe, 
-  Layers, 
+import {
+  Mail,
+  Phone,
+  MapPin,
+  FileText,
+  BookOpen,
+  CheckCircle2,
+  AlertCircle,
+  Code2,
+  Cpu,
+  Layers,
   ChevronRight,
   Terminal,
   Zap,
-  Star
+  Star,
 } from "lucide-react";
+import Script from "next/script";
 import { useState, useEffect } from "react";
 
 const projects = [
   {
-    title: "Quantum Analytics Engine",
-    description: "A high-performance data processing engine built with Rust and Next.js, capable of handling millions of data points in real-time.",
-    tags: ["Next.js", "Rust", "WebAssembly", "Tailwind"],
-    link: "#",
-    github: "#",
-    image: "https://picsum.photos/seed/quantum/800/450"
+    title: "React Framework Clone (Fiber Architecture)",
+    description:
+      "Built React from scratch: Virtual DOM diffing, reconciliation, Fiber scheduler, and hooks. Implemented interruptible rendering and lane-based priority scheduling for 10,000+ element lists.",
+    tags: ["Vanilla JS", "Algorithms", "Reconciliation", "Fiber"],
   },
   {
-    title: "Neural Vision Dashboard",
-    description: "An AI-powered computer vision dashboard for real-time object detection and classification in manufacturing environments.",
-    tags: ["React", "TensorFlow.js", "Python", "FastAPI"],
-    link: "#",
-    github: "#",
-    image: "https://picsum.photos/seed/neural/800/450"
+    title: "Enterprise Radiology Collaboration Platform (HealthTech)",
+    description:
+      "HIPAA-compliant pathology platform with DICOM medical imaging workflows. Built a custom viewer (zoom/pan/rotate/annotations) and optimized rendering for 500MB+ files with efficient memory management.",
+    tags: ["React", "TypeScript", "DICOM", "Canvas"],
   },
   {
-    title: "Eco-Sync Platform",
-    description: "A decentralized platform for tracking carbon credits and environmental impact using blockchain technology.",
-    tags: ["Solidity", "Ether.js", "Next.js", "PostgreSQL"],
-    link: "#",
-    github: "#",
-    image: "https://picsum.photos/seed/eco/800/450"
-  }
+    title: "AI-Powered Learning Management System (EdTech)",
+    description:
+      "Real-time AI tutor with voice/text via LiveKit WebRTC, collaborative whiteboard with Socket.IO sync, and DRM protection for premium video content.",
+    tags: ["Next.js", "LiveKit", "WebRTC", "Socket.IO"],
+  },
+  {
+    title: "Fantasy Sports Admin Dashboard (FinTech/Gaming)",
+    description:
+      "Admin system for 50,000+ users with real-time financial tracking, contest operations, and fraud workflows. Built WebSocket live leaderboard (sub-100ms) and analytics dashboards over 1M+ transactions.",
+    tags: ["React", "Redux Toolkit", "WebSockets", "Charts"],
+  },
 ];
 
 const skills = [
-  { name: "Frontend", items: ["React", "Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"] },
-  { name: "Backend", items: ["Node.js", "Express", "PostgreSQL", "MongoDB", "GraphQL"] },
-  { name: "DevOps", items: ["Docker", "Kubernetes", "AWS", "CI/CD", "Terraform"] },
-  { name: "AI/ML", items: ["TensorFlow", "PyTorch", "OpenAI API", "LangChain"] }
+  {
+    name: "Core Expertise",
+    items: ["React.js (Fiber Architecture)", "TypeScript", "JavaScript (ES6+)", "Frontend System Design"],
+  },
+  {
+    name: "Frameworks & Libraries",
+    items: ["Next.js", "Redux Toolkit", "TanStack Query", "Context API", "Tailwind CSS"],
+  },
+  {
+    name: "Performance & Algorithms",
+    items: ["Virtual DOM Diffing", "Reconciliation", "Web Vitals Optimization", "Code Splitting"],
+  },
+  {
+    name: "Testing, Tooling & DevOps",
+    items: ["Jest", "React Testing Library", "Cypress", "Webpack", "Vite", "Docker", "Git", "CI/CD"],
+  },
+];
+
+const blogs = [
+  {
+    title: "Socket.IO Explained: Why It Exists, How It Works Internally, and How It Scales to Millions",
+    url: "https://dev.to/munna_thakur_2019444f0351/socketio-explained-why-it-exists-how-it-works-internally-and-how-it-scales-to-millions-1ekj",
+    tags: ["System Design", "Networking", "JavaScript"],
+  },
+  {
+    title: "Why Most React Apps Fail Core Web Vitals (And How to Actually Fix Them)",
+    url: "https://dev.to/munna_thakur_2019444f0351/why-most-react-apps-fail-core-web-vitals-and-how-to-actually-fix-them-312e",
+    tags: ["React", "Performance", "Web Vitals"],
+  },
+  {
+    title: "React Query Architecture — Complete Flow from Hook to Render",
+    url: "https://dev.to/munna_thakur_2019444f0351/react-query-architecture-complete-flow-from-hook-to-render-4boj",
+    tags: ["React Query", "Architecture", "React"],
+  },
+  {
+    title: "I Built React from Scratch and Discovered Why Fiber Changes Everything",
+    url: "https://dev.to/munna_thakur_2019444f0351/i-built-react-from-scratch-and-discovered-why-fiber-changes-everything-1g4c",
+    tags: ["React", "Fiber", "Internals"],
+  },
+  {
+    title: "The Day I Finally Understood React Keys (And Why Your Checkbox Keeps Breaking)",
+    url: "https://dev.to/munna_thakur_2019444f0351/the-day-i-finally-understood-react-keys-and-why-your-checkbox-keeps-breaking-4ch7",
+    tags: ["React", "Reconciliation", "Keys"],
+  },
 ];
 
 export default function Portfolio() {
   const [activeSection, setActiveSection] = useState("hero");
+  const [contactName, setContactName] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
+  const [contactMessage, setContactMessage] = useState("");
+  const [contactStatus, setContactStatus] = useState<"idle" | "success" | "error">("idle");
+  const [contactError, setContactError] = useState<string | null>(null);
+
+  const siteUrl = "https://munna-thakur-software.vercel.app";
+  const personId = `${siteUrl}/#person`;
+
+  const blogItemListLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Munna Thakur - DEV.to Articles",
+    itemListOrder: "https://schema.org/ItemListOrderDescending",
+    numberOfItems: blogs.length,
+    itemListElement: blogs.map((post, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      url: post.url,
+      item: {
+        "@type": "BlogPosting",
+        headline: post.title,
+        url: post.url,
+        author: { "@id": personId },
+      },
+    })),
+  };
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ["hero", "about", "experience", "projects", "skills", "contact"];
+      const sections = ["about", "experience", "projects", "skills", "blogs", "education", "contact"];
       const current = sections.find(section => {
         const element = document.getElementById(section);
         if (element) {
@@ -74,10 +144,15 @@ export default function Portfolio() {
 
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100 selection:bg-blue-500/30">
+      <Script
+        id="ld-blogs-itemlist"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(blogItemListLd) }}
+      />
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 flex justify-center p-6">
         <div className="glass px-8 py-3 rounded-full flex items-center gap-8 text-sm font-medium">
-          {["hero", "about", "experience", "projects", "skills", "contact"].map((section) => (
+          {["about", "experience", "projects", "skills", "blogs", "education", "contact"].map((section) => (
             <a
               key={section}
               href={`#${section}`}
@@ -107,26 +182,39 @@ export default function Portfolio() {
         >
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-semibold mb-6">
             <Zap className="w-3 h-3" />
-            <span>AVAILABLE FOR NEW PROJECTS</span>
+            <span>OPEN TO OPPORTUNITIES</span>
           </div>
           
           <h1 className="font-display text-6xl md:text-8xl font-bold tracking-tight mb-6 leading-tight">
-            Building the <span className="text-gradient">Future</span> of <br />
-            Software Solutions
+            Munna <span className="text-gradient">Thakur</span>
           </h1>
           
           <p className="text-zinc-400 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
-            Munna Thakur — Senior Software Engineer specializing in high-performance 
-            scalable systems and modern web architectures.
+            Software Engineer — Frontend Systems & Performance. Building production-grade web apps,
+            optimizing Core Web Vitals, and deep-diving into React internals.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4">
-            <button className="px-8 py-4 rounded-full bg-zinc-100 text-zinc-950 font-semibold hover:bg-white transition-all transform hover:scale-105">
+            <a
+              href="#projects"
+              className="px-8 py-4 rounded-full bg-zinc-100 text-zinc-950 font-semibold hover:bg-white transition-all transform hover:scale-105"
+            >
               View Projects
-            </button>
-            <button className="px-8 py-4 rounded-full glass font-semibold hover:bg-white/10 transition-all transform hover:scale-105 flex items-center gap-2">
-              Contact Me <ChevronRight className="w-4 h-4" />
-            </button>
+            </a>
+            <a
+              href="/munna-resume.pdf"
+              className="px-8 py-4 rounded-full glass font-semibold hover:bg-white/10 transition-all transform hover:scale-105 flex items-center gap-2"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Resume <FileText className="w-4 h-4" />
+            </a>
+            <a
+              href="#contact"
+              className="px-8 py-4 rounded-full glass font-semibold hover:bg-white/10 transition-all transform hover:scale-105 flex items-center gap-2"
+            >
+              Contact <ChevronRight className="w-4 h-4" />
+            </a>
           </div>
         </motion.div>
 
@@ -153,18 +241,19 @@ export default function Portfolio() {
             <div className="space-y-4">
               <h2 className="font-display text-4xl font-bold">Crafting Excellence Through Code</h2>
               <p className="text-zinc-400 text-lg leading-relaxed">
-                With over a decade of experience in the software industry, I've helped startups 
-                and enterprises build robust digital products. My approach combines technical 
-                precision with a deep understanding of user needs.
+                Software Engineer with 1.8 years of experience building high-scale, production-grade web
+                applications serving 10,000+ DAU. I focus on React internals, frontend system design,
+                and performance optimization—delivering 40%+ improvements through algorithmic and
+                architectural refactoring.
               </p>
             </div>
 
             <div className="grid grid-cols-2 gap-6">
               {[
-                { icon: Code2, label: "Clean Code", desc: "Maintainable & Scalable" },
-                { icon: Cpu, label: "Performance", desc: "Optimized & Fast" },
-                { icon: Globe, label: "Global Scale", desc: "Cloud Native" },
-                { icon: Layers, label: "Architecture", desc: "Modern Patterns" }
+                { icon: Code2, label: "React Internals", desc: "Fiber • Reconciliation • Hooks" },
+                { icon: Cpu, label: "Performance", desc: "Web Vitals • TTI • Code Splitting" },
+                { icon: Layers, label: "System Design", desc: "Scalable FE architecture patterns" },
+                { icon: Terminal, label: "Quality", desc: "Testing • Tooling • DX" },
               ].map((item, i) => (
                 <div key={i} className="glass p-6 rounded-2xl space-y-3">
                   <item.icon className="w-6 h-6 text-blue-400" />
@@ -183,17 +272,16 @@ export default function Portfolio() {
           >
             <div className="aspect-square rounded-3xl overflow-hidden glass p-2">
               <img 
-                src="https://picsum.photos/seed/munna/800/800" 
+                src="/profile.png"
                 alt="Munna Thakur" 
-                className="w-full h-full object-cover rounded-2xl grayscale hover:grayscale-0 transition-all duration-700"
-                referrerPolicy="no-referrer"
+                className="w-full h-full object-cover rounded-2xl"
               />
             </div>
             {/* Floating Stats */}
             <div className="absolute -bottom-6 -right-6 glass p-6 rounded-2xl shadow-2xl">
               <div className="flex items-center gap-4">
-                <div className="text-4xl font-bold text-blue-400">10+</div>
-                <div className="text-xs text-zinc-400 uppercase tracking-wider font-bold">Years of<br />Experience</div>
+                <div className="text-4xl font-bold text-blue-400">10k+</div>
+                <div className="text-xs text-zinc-400 uppercase tracking-wider font-bold">Daily Active<br />Users Served</div>
               </div>
             </div>
           </motion.div>
@@ -206,30 +294,24 @@ export default function Portfolio() {
           <div className="md:w-1/3 space-y-4">
             <h2 className="font-display text-4xl font-bold">Career Journey</h2>
             <p className="text-zinc-400">
-              A timeline of my professional growth and the impact I've made at various organizations.
+              Roles and impact across production systems, performance work, and frontend architecture.
             </p>
           </div>
           
           <div className="md:w-2/3 space-y-12">
             {[
               {
-                role: "Lead Software Architect",
-                company: "TechNova Solutions",
-                period: "2021 — Present",
-                desc: "Leading the architectural design of a cloud-native SaaS platform. Reduced infrastructure costs by 40% through serverless optimization."
+                role: "Software Engineer (Frontend)",
+                company: "Yudiz Solutions — Ahmedabad, India",
+                period: "Jul 2024 — Present",
+                desc: "Delivered 5+ production React apps scaling to 10,000+ DAU with 99.9% FE uptime and sub-100ms interaction latency. Reduced API overhead by 45% with Redux Toolkit + TanStack Query caching/dedup. Led a 50,000+ LOC TypeScript migration cutting runtime errors by 60%. Improved Core Web Vitals with code splitting, lazy loading, and render optimization (40% faster load, 25% better TTI).",
               },
               {
-                role: "Senior Full Stack Engineer",
-                company: "DataStream AI",
-                period: "2018 — 2021",
-                desc: "Developed real-time data visualization tools using React and D3.js. Implemented automated CI/CD pipelines for 50+ microservices."
+                role: "Frontend Developer Intern",
+                company: "CodTech IT Solutions — Remote",
+                period: "Feb 2024 — Mar 2024",
+                desc: "Built a real-time job portal dashboard with React + Tailwind CSS. Improved engagement by 20% via responsive UX and optimized rendering performance.",
               },
-              {
-                role: "Software Engineer",
-                company: "Global Systems",
-                period: "2015 — 2018",
-                desc: "Built scalable RESTful APIs and optimized database queries, improving application performance by 60%."
-              }
             ].map((exp, i) => (
               <motion.div
                 key={i}
@@ -255,15 +337,19 @@ export default function Portfolio() {
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
             <div className="space-y-4">
-              <h2 className="font-display text-4xl font-bold">Selected Works</h2>
+              <h2 className="font-display text-4xl font-bold">Deep-Dive Projects</h2>
               <p className="text-zinc-400 max-w-xl">
-                A collection of projects that push the boundaries of what's possible 
-                on the web and beyond.
+                Systems-focused projects: React internals, real-time systems, and performance-heavy UIs.
               </p>
             </div>
-            <button className="text-blue-400 font-medium flex items-center gap-2 hover:gap-4 transition-all">
-              View All Archive <ChevronRight className="w-4 h-4" />
-            </button>
+            <a
+              href="/munna-resume.pdf"
+              target="_blank"
+              rel="noreferrer"
+              className="text-blue-400 font-medium flex items-center gap-2 hover:gap-4 transition-all"
+            >
+              Download Resume <ChevronRight className="w-4 h-4" />
+            </a>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -276,14 +362,6 @@ export default function Portfolio() {
                 transition={{ delay: i * 0.1 }}
                 className="group glass rounded-3xl overflow-hidden hover:border-blue-500/30 transition-all"
               >
-                <div className="aspect-video overflow-hidden">
-                  <img 
-                    src={project.image} 
-                    alt={project.title} 
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                    referrerPolicy="no-referrer"
-                  />
-                </div>
                 <div className="p-8 space-y-4">
                   <div className="flex flex-wrap gap-2">
                     {project.tags.map((tag, j) => (
@@ -296,14 +374,6 @@ export default function Portfolio() {
                   <p className="text-zinc-400 text-sm leading-relaxed line-clamp-3">
                     {project.description}
                   </p>
-                  <div className="pt-4 flex items-center gap-4">
-                    <a href={project.link} className="p-2 rounded-full glass hover:bg-white/10 transition-colors">
-                      <ExternalLink className="w-4 h-4" />
-                    </a>
-                    <a href={project.github} className="p-2 rounded-full glass hover:bg-white/10 transition-colors">
-                      <Github className="w-4 h-4" />
-                    </a>
-                  </div>
                 </div>
               </motion.div>
             ))}
@@ -316,8 +386,7 @@ export default function Portfolio() {
         <div className="text-center mb-20 space-y-4">
           <h2 className="font-display text-4xl font-bold">Technical Arsenal</h2>
           <p className="text-zinc-400 max-w-2xl mx-auto">
-            My expertise spans across the entire development stack, with a focus 
-            on modern, efficient technologies.
+            Strong foundation in rendering algorithms, browser performance, and scalable frontend architectures.
           </p>
         </div>
 
@@ -334,7 +403,7 @@ export default function Portfolio() {
               <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center">
                 {i === 0 && <Terminal className="w-6 h-6 text-blue-400" />}
                 {i === 1 && <Cpu className="w-6 h-6 text-blue-400" />}
-                {i === 2 && <Globe className="w-6 h-6 text-blue-400" />}
+                {i === 2 && <Layers className="w-6 h-6 text-blue-400" />}
                 {i === 3 && <Star className="w-6 h-6 text-blue-400" />}
               </div>
               <h3 className="text-xl font-bold">{skill.name}</h3>
@@ -351,6 +420,121 @@ export default function Portfolio() {
         </div>
       </section>
 
+      {/* Blogs Section */}
+      <section id="blogs" className="py-32 px-4 max-w-7xl mx-auto">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+          <div className="space-y-4">
+            <h2 className="font-display text-4xl font-bold">Blogs</h2>
+            <p className="text-zinc-400 max-w-2xl">
+              Deep dives on React internals, performance, and scalable web architecture. Read more on{" "}
+              <a
+                className="text-blue-400 hover:text-blue-300 transition-colors"
+                href="https://dev.to/munna_thakur_2019444f0351"
+                target="_blank"
+                rel="noreferrer"
+              >
+                DEV.to
+              </a>
+              .
+            </p>
+          </div>
+          <a
+            href="https://dev.to/munna_thakur_2019444f0351"
+            target="_blank"
+            rel="noreferrer"
+            className="text-blue-400 font-medium flex items-center gap-2 hover:gap-4 transition-all"
+          >
+            View all posts <ChevronRight className="w-4 h-4" />
+          </a>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {blogs.map((post) => (
+            <a
+              key={post.url}
+              href={post.url}
+              target="_blank"
+              rel="noreferrer"
+              className="group glass p-8 rounded-3xl hover:border-blue-500/30 transition-all block"
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div className="space-y-3">
+                  <div className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-zinc-500">
+                    <BookOpen className="w-4 h-4 text-blue-400" />
+                    DEV.to
+                  </div>
+                  <h3 className="text-xl font-bold group-hover:text-blue-400 transition-colors leading-snug">
+                    {post.title}
+                  </h3>
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    {post.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 px-2 py-1 rounded-md bg-zinc-800"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                <ChevronRight className="w-5 h-5 text-zinc-500 group-hover:text-blue-400 transition-colors mt-1 shrink-0" />
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      {/* Education & Impact Section */}
+      <section id="education" className="py-32 px-4 bg-zinc-900/30">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="glass p-10 rounded-[40px] space-y-6"
+          >
+            <h2 className="font-display text-4xl font-bold">Education</h2>
+            <div className="space-y-2">
+              <div className="text-lg font-semibold">Bachelor of Engineering in Computer Engineering</div>
+              <div className="text-zinc-400">Gujarat Technological University</div>
+              <div className="text-zinc-500 text-sm">CGPA: 8.3/10.0</div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="glass p-10 rounded-[40px] space-y-6"
+          >
+            <h2 className="font-display text-4xl font-bold">Leadership & Impact</h2>
+            <ul className="space-y-4 text-zinc-400 leading-relaxed">
+              <li className="flex gap-3">
+                <div className="mt-2 w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0" />
+                <span>
+                  Technical writing on Medium about React internals (Fiber, reconciliation), performance optimization,
+                  custom hooks, and scalable frontend architecture—shared with 1.2k+ developers.
+                </span>
+              </li>
+              <li className="flex gap-3">
+                <div className="mt-2 w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0" />
+                <span>
+                  AI-assisted development workflow using Cursor, Claude, and ChatGPT for code review and diagnosis,
+                  while validating outputs and refactoring for production quality.
+                </span>
+              </li>
+              <li className="flex gap-3">
+                <div className="mt-2 w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0" />
+                <span>
+                  Open-source contributor and community speaker (Ahmedabad meetups) on React performance and modern
+                  JavaScript patterns.
+                </span>
+              </li>
+            </ul>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Contact Section */}
       <section id="contact" className="py-32 px-4">
         <div className="max-w-5xl mx-auto glass rounded-[40px] p-12 md:p-20 relative overflow-hidden">
@@ -364,43 +548,130 @@ export default function Portfolio() {
                 Something <span className="text-gradient">Epic</span>
               </h2>
               <p className="text-zinc-400 text-lg">
-                I'm currently open to new opportunities and collaborations. 
-                Have a project in mind? Let's talk.
+                For roles, freelance work, or collaborations—reach out and I’ll respond quickly.
               </p>
               
               <div className="space-y-4 pt-8">
-                <a href="mailto:hello@munnathakur.com" className="flex items-center gap-4 text-xl font-medium hover:text-blue-400 transition-colors">
+                <a href="mailto:munna.thakur.dev@gmail.com" className="flex items-center gap-4 text-xl font-medium hover:text-blue-400 transition-colors">
                   <div className="w-12 h-12 rounded-full glass flex items-center justify-center">
                     <Mail className="w-5 h-5" />
                   </div>
-                  hello@munnathakur.com
+                  munna.thakur.dev@gmail.com
                 </a>
-                <div className="flex gap-4 pt-4">
-                  {[Github, Linkedin].map((Icon, i) => (
-                    <a key={i} href="#" className="w-12 h-12 rounded-full glass flex items-center justify-center hover:bg-white/10 transition-colors">
-                      <Icon className="w-5 h-5" />
-                    </a>
-                  ))}
+                <a href="tel:+916239402958" className="flex items-center gap-4 text-xl font-medium hover:text-blue-400 transition-colors">
+                  <div className="w-12 h-12 rounded-full glass flex items-center justify-center">
+                    <Phone className="w-5 h-5" />
+                  </div>
+                  +91 62394 02958
+                </a>
+                <div className="flex items-center gap-4 text-xl font-medium text-zinc-300">
+                  <div className="w-12 h-12 rounded-full glass flex items-center justify-center">
+                    <MapPin className="w-5 h-5" />
+                  </div>
+                  Ahmedabad, Gujarat, India
                 </div>
+                <a
+                  href="/munna-resume.pdf"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-3 pt-6 text-blue-400 font-semibold hover:text-blue-300 transition-colors"
+                >
+                  <FileText className="w-5 h-5" />
+                  Download Resume (PDF)
+                </a>
               </div>
             </div>
 
-            <form className="space-y-6">
+            <form
+              className="space-y-6"
+              onSubmit={(e) => {
+                e.preventDefault();
+                setContactError(null);
+
+                const name = contactName.trim();
+                const email = contactEmail.trim();
+                const message = contactMessage.trim();
+
+                if (!name || !email || !message) {
+                  setContactStatus("error");
+                  setContactError("Please fill in name, email, and message.");
+                  return;
+                }
+
+                // Basic email sanity check (not strict validation).
+                if (!/^\S+@\S+\.\S+$/.test(email)) {
+                  setContactStatus("error");
+                  setContactError("Please enter a valid email address.");
+                  return;
+                }
+
+                const subject = encodeURIComponent(`Portfolio contact from ${name}`);
+                const body = encodeURIComponent(
+                  `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}\n`
+                );
+
+                window.location.href = `mailto:munna.thakur.dev@gmail.com?subject=${subject}&body=${body}`;
+                setContactStatus("success");
+              }}
+            >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="text-xs font-bold uppercase tracking-widest text-zinc-500">Name</label>
-                  <input type="text" className="w-full bg-zinc-900/50 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500/50 transition-colors" placeholder="John Doe" />
+                  <input
+                    type="text"
+                    value={contactName}
+                    onChange={(e) => setContactName(e.target.value)}
+                    className="w-full bg-zinc-900/50 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500/50 transition-colors"
+                    placeholder="Your name"
+                    autoComplete="name"
+                  />
                 </div>
                 <div className="space-y-2">
                   <label className="text-xs font-bold uppercase tracking-widest text-zinc-500">Email</label>
-                  <input type="email" className="w-full bg-zinc-900/50 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500/50 transition-colors" placeholder="john@example.com" />
+                  <input
+                    type="email"
+                    value={contactEmail}
+                    onChange={(e) => setContactEmail(e.target.value)}
+                    className="w-full bg-zinc-900/50 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500/50 transition-colors"
+                    placeholder="you@example.com"
+                    autoComplete="email"
+                  />
                 </div>
               </div>
               <div className="space-y-2">
                 <label className="text-xs font-bold uppercase tracking-widest text-zinc-500">Message</label>
-                <textarea rows={4} className="w-full bg-zinc-900/50 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500/50 transition-colors resize-none" placeholder="Tell me about your project..." />
+                <textarea
+                  rows={4}
+                  value={contactMessage}
+                  onChange={(e) => setContactMessage(e.target.value)}
+                  className="w-full bg-zinc-900/50 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500/50 transition-colors resize-none"
+                  placeholder="Tell me about your project..."
+                />
               </div>
-              <button className="w-full py-4 rounded-xl bg-zinc-100 text-zinc-950 font-bold hover:bg-white transition-all transform hover:scale-[1.02]">
+              {contactStatus !== "idle" && (
+                <div
+                  className={`rounded-xl px-4 py-3 text-sm border flex items-start gap-2 ${
+                    contactStatus === "success"
+                      ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-200"
+                      : "border-rose-500/30 bg-rose-500/10 text-rose-200"
+                  }`}
+                >
+                  {contactStatus === "success" ? (
+                    <CheckCircle2 className="w-4 h-4 mt-0.5" />
+                  ) : (
+                    <AlertCircle className="w-4 h-4 mt-0.5" />
+                  )}
+                  <div>
+                    {contactStatus === "success"
+                      ? "Opening your email client with the message pre-filled."
+                      : contactError ?? "Something went wrong. Please try again."}
+                  </div>
+                </div>
+              )}
+              <button
+                type="submit"
+                className="w-full py-4 rounded-xl bg-zinc-100 text-zinc-950 font-bold hover:bg-white transition-all transform hover:scale-[1.02]"
+              >
                 Send Message
               </button>
             </form>
