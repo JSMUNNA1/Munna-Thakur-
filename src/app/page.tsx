@@ -10,6 +10,8 @@ import {
   Github,
   Linkedin,
   MessageCircle,
+  X,
+  Menu,
   CheckCircle2,
   AlertCircle,
   Code2,
@@ -99,6 +101,7 @@ const blogs = [
 
 export default function Portfolio() {
   const [activeSection, setActiveSection] = useState("hero");
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [contactName, setContactName] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [contactMessage, setContactMessage] = useState("");
@@ -145,6 +148,16 @@ export default function Portfolio() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMobileNavOpen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
+
+  const navSections = ["about", "experience", "projects", "skills", "blogs", "education", "contact"] as const;
+
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100 selection:bg-blue-500/30">
       <Script
@@ -153,24 +166,109 @@ export default function Portfolio() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(blogItemListLd) }}
       />
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 flex justify-center p-6">
-        <div className="glass px-8 py-3 rounded-full flex items-center gap-8 text-sm font-medium">
-          {["about", "experience", "projects", "skills", "blogs", "education", "contact"].map((section) => (
-            <a
-              key={section}
-              href={`#${section}`}
-              className={`capitalize transition-colors hover:text-blue-400 ${
-                activeSection === section ? "text-blue-400" : "text-zinc-400"
-              }`}
-            >
-              {section}
+      <nav className="fixed top-0 left-0 right-0 z-50 flex justify-center px-4 py-4 md:p-6">
+        <div className="w-full max-w-4xl">
+          {/* Desktop */}
+          <div className="hidden md:flex glass px-8 py-3 rounded-full items-center justify-center gap-8 text-sm font-medium">
+            {navSections.map((section) => (
+              <a
+                key={section}
+                href={`#${section}`}
+                className={`capitalize transition-colors hover:text-blue-400 ${
+                  activeSection === section ? "text-blue-400" : "text-zinc-400"
+                }`}
+              >
+                {section}
+              </a>
+            ))}
+          </div>
+
+          {/* Mobile */}
+          <div className="md:hidden glass px-4 py-3 rounded-full flex items-center justify-between">
+            <a href="#about" className="font-semibold text-zinc-200">
+              Munna
             </a>
-          ))}
+            <button
+              type="button"
+              aria-label={mobileNavOpen ? "Close menu" : "Open menu"}
+              aria-expanded={mobileNavOpen}
+              onClick={() => setMobileNavOpen((v) => !v)}
+              className="p-2 rounded-full hover:bg-white/10 transition-colors"
+            >
+              {mobileNavOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
         </div>
       </nav>
 
+      {/* Mobile menu overlay */}
+      {mobileNavOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm md:hidden"
+          onClick={() => setMobileNavOpen(false)}
+          role="presentation"
+        >
+          <div
+            className="absolute top-20 left-4 right-4 glass rounded-3xl p-4"
+            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-label="Mobile navigation"
+          >
+            <div className="grid grid-cols-2 gap-2">
+              {navSections.map((section) => (
+                <a
+                  key={section}
+                  href={`#${section}`}
+                  onClick={() => setMobileNavOpen(false)}
+                  className={`px-4 py-3 rounded-2xl text-sm font-semibold capitalize transition-colors ${
+                    activeSection === section
+                      ? "bg-blue-500/15 text-blue-200 border border-blue-500/20"
+                      : "bg-white/5 text-zinc-200 border border-white/10 hover:bg-white/10"
+                  }`}
+                >
+                  {section}
+                </a>
+              ))}
+            </div>
+
+            <div className="mt-4 grid grid-cols-3 gap-2">
+              <a
+                href="https://www.linkedin.com/in/munna-thakur-frontend-developer-2854b5243/"
+                target="_blank"
+                rel="noreferrer"
+                className="px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-zinc-200 text-sm font-semibold flex items-center justify-center gap-2 hover:bg-white/10 transition-colors"
+              >
+                <Linkedin className="w-4 h-4 text-blue-400" />
+                Link
+              </a>
+              <a
+                href="https://github.com/JSMUNNA1"
+                target="_blank"
+                rel="noreferrer"
+                className="px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-zinc-200 text-sm font-semibold flex items-center justify-center gap-2 hover:bg-white/10 transition-colors"
+              >
+                <Github className="w-4 h-4 text-blue-400" />
+                Git
+              </a>
+              <a
+                href="https://dev.to/munna_thakur_2019444f0351"
+                target="_blank"
+                rel="noreferrer"
+                className="px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-zinc-200 text-sm font-semibold flex items-center justify-center gap-2 hover:bg-white/10 transition-colors"
+              >
+                <BookOpen className="w-4 h-4 text-blue-400" />
+                Dev
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Hero Section */}
-      <section id="hero" className="relative h-screen flex flex-col items-center justify-center overflow-hidden px-4">
+      <section
+        id="hero"
+        className="relative min-h-[92vh] md:h-screen flex flex-col items-center justify-center overflow-hidden px-4 pt-24 md:pt-0"
+      >
         {/* Background Gradients */}
         <div className="absolute inset-0 -z-10">
           <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/20 blur-[120px] rounded-full animate-pulse" />
