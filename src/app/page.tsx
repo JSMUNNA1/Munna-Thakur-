@@ -7,6 +7,9 @@ import {
   MapPin,
   FileText,
   BookOpen,
+  Github,
+  Linkedin,
+  MessageCircle,
   CheckCircle2,
   AlertCircle,
   Code2,
@@ -202,6 +205,14 @@ export default function Portfolio() {
               View Projects
             </a>
             <a
+              href="https://wa.me/916239402958"
+              className="px-8 py-4 rounded-full bg-emerald-400/15 text-emerald-200 border border-emerald-400/20 font-semibold hover:bg-emerald-400/20 transition-all transform hover:scale-105 flex items-center gap-2"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Hire Me <MessageCircle className="w-4 h-4" />
+            </a>
+            <a
               href="/munna-resume.pdf"
               className="px-8 py-4 rounded-full glass font-semibold hover:bg-white/10 transition-all transform hover:scale-105 flex items-center gap-2"
               target="_blank"
@@ -214,6 +225,36 @@ export default function Portfolio() {
               className="px-8 py-4 rounded-full glass font-semibold hover:bg-white/10 transition-all transform hover:scale-105 flex items-center gap-2"
             >
               Contact <ChevronRight className="w-4 h-4" />
+            </a>
+          </div>
+
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3 text-sm">
+            <a
+              href="https://www.linkedin.com/in/munna-thakur-frontend-developer-2854b5243/"
+              target="_blank"
+              rel="noreferrer"
+              className="glass px-4 py-2 rounded-full hover:bg-white/10 transition-colors flex items-center gap-2 text-zinc-300"
+            >
+              <Linkedin className="w-4 h-4 text-blue-400" />
+              LinkedIn
+            </a>
+            <a
+              href="https://github.com/JSMUNNA1"
+              target="_blank"
+              rel="noreferrer"
+              className="glass px-4 py-2 rounded-full hover:bg-white/10 transition-colors flex items-center gap-2 text-zinc-300"
+            >
+              <Github className="w-4 h-4 text-blue-400" />
+              GitHub
+            </a>
+            <a
+              href="https://dev.to/munna_thakur_2019444f0351"
+              target="_blank"
+              rel="noreferrer"
+              className="glass px-4 py-2 rounded-full hover:bg-white/10 transition-colors flex items-center gap-2 text-zinc-300"
+            >
+              <BookOpen className="w-4 h-4 text-blue-400" />
+              DEV.to
             </a>
           </div>
         </motion.div>
@@ -564,11 +605,51 @@ export default function Portfolio() {
                   </div>
                   +91 62394 02958
                 </a>
+                <a
+                  href="https://wa.me/916239402958"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-4 text-xl font-medium hover:text-emerald-300 transition-colors"
+                >
+                  <div className="w-12 h-12 rounded-full glass flex items-center justify-center">
+                    <MessageCircle className="w-5 h-5" />
+                  </div>
+                  WhatsApp: Hire me
+                </a>
                 <div className="flex items-center gap-4 text-xl font-medium text-zinc-300">
                   <div className="w-12 h-12 rounded-full glass flex items-center justify-center">
                     <MapPin className="w-5 h-5" />
                   </div>
                   Ahmedabad, Gujarat, India
+                </div>
+                <div className="flex flex-wrap gap-3 pt-2">
+                  <a
+                    href="https://www.linkedin.com/in/munna-thakur-frontend-developer-2854b5243/"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="glass px-4 py-2 rounded-full hover:bg-white/10 transition-colors flex items-center gap-2 text-zinc-300"
+                  >
+                    <Linkedin className="w-4 h-4 text-blue-400" />
+                    LinkedIn
+                  </a>
+                  <a
+                    href="https://github.com/JSMUNNA1"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="glass px-4 py-2 rounded-full hover:bg-white/10 transition-colors flex items-center gap-2 text-zinc-300"
+                  >
+                    <Github className="w-4 h-4 text-blue-400" />
+                    GitHub
+                  </a>
+                  <a
+                    href="https://dev.to/munna_thakur_2019444f0351"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="glass px-4 py-2 rounded-full hover:bg-white/10 transition-colors flex items-center gap-2 text-zinc-300"
+                  >
+                    <BookOpen className="w-4 h-4 text-blue-400" />
+                    DEV.to
+                  </a>
                 </div>
                 <a
                   href="/munna-resume.pdf"

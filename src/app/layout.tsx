@@ -72,6 +72,7 @@ export default function RootLayout({
       telephone: "+91-623-940-2958",
       sameAs: [
         "https://www.linkedin.com/in/munna-thakur-frontend-developer-2854b5243/",
+        "https://github.com/JSMUNNA1",
         "https://dev.to/munna_thakur_2019444f0351",
       ],
       address: {
