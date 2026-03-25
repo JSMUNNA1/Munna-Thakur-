@@ -1,12 +1,17 @@
 "use client";
 
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import {
   Mail,
   Phone,
   MapPin,
   FileText,
   BookOpen,
+  Github,
+  Linkedin,
+  MessageCircle,
+  X,
+  Menu,
   CheckCircle2,
   AlertCircle,
   Code2,
@@ -16,6 +21,10 @@ import {
   Terminal,
   Zap,
   Star,
+  Wand2,
+  Gauge,
+  Network,
+  TestTube2,
 } from "lucide-react";
 import Script from "next/script";
 import { useState, useEffect } from "react";
@@ -30,7 +39,7 @@ const projects = [
   {
     title: "Enterprise Radiology Collaboration Platform (HealthTech)",
     description:
-      "HIPAA-compliant pathology platform with DICOM medical imaging workflows. Built a custom viewer (zoom/pan/rotate/annotations) and optimized rendering for 500MB+ files with efficient memory management.",
+      "Security-focused radiology collaboration platform supporting DICOM medical imaging workflows. Built a custom viewer (zoom/pan/rotate/annotations) and optimized rendering for 500MB+ files with efficient memory management.",
     tags: ["React", "TypeScript", "DICOM", "Canvas"],
   },
   {
@@ -50,19 +59,81 @@ const projects = [
 const skills = [
   {
     name: "Core Expertise",
-    items: ["React.js (Fiber Architecture)", "TypeScript", "JavaScript (ES6+)", "Frontend System Design"],
+    items: [
+      "React.js (Fiber Architecture)",
+      "TypeScript",
+      "JavaScript (ES6+)",
+      "HTML5",
+      "CSS3",
+      "Frontend System Design",
+    ],
   },
   {
     name: "Frameworks & Libraries",
     items: ["Next.js", "Redux Toolkit", "TanStack Query", "Context API", "Tailwind CSS"],
   },
   {
-    name: "Performance & Algorithms",
-    items: ["Virtual DOM Diffing", "Reconciliation", "Web Vitals Optimization", "Code Splitting"],
+    name: "UI Engineering",
+    items: [
+      "Responsive Design",
+      "Cross-browser Compatibility",
+      "Component Libraries",
+      "Design Systems",
+      "Storybook",
+    ],
+  },
+  {
+    name: "Performance & Observability",
+    items: [
+      "Virtual DOM Diffing",
+      "Reconciliation",
+      "Core Web Vitals (LCP/INP/CLS)",
+      "Code Splitting",
+      "Bundle Analysis (Lighthouse, WebPageTest)",
+    ],
+  },
+  {
+    name: "APIs & Data",
+    items: ["REST APIs", "GraphQL (basic)", "Caching Strategies", "Request Deduplication"],
+  },
+  {
+    name: "Real-time & Media",
+    items: ["Socket.IO", "LiveKit (WebRTC)", "DRM Implementation", "DICOM Medical Imaging"],
   },
   {
     name: "Testing, Tooling & DevOps",
-    items: ["Jest", "React Testing Library", "Cypress", "Webpack", "Vite", "Docker", "Git", "CI/CD"],
+    items: [
+      "Jest",
+      "React Testing Library",
+      "Cypress",
+      "ESLint",
+      "Prettier",
+      "Webpack",
+      "Vite",
+      "Docker",
+      "Git",
+      "CI/CD",
+    ],
+  },
+  {
+    name: "System Design",
+    items: [
+      "Scalable Architecture",
+      "Atomic Design",
+      "State Management Patterns",
+      "Accessibility (WCAG)",
+    ],
+  },
+  {
+    name: "AI-Assisted Development",
+    items: [
+      "Cursor IDE",
+      "Claude (Anthropic)",
+      "ChatGPT",
+      "GitHub Copilot",
+      "Gemini",
+      "AI Code Review & Refactoring",
+    ],
   },
 ];
 
@@ -96,11 +167,14 @@ const blogs = [
 
 export default function Portfolio() {
   const [activeSection, setActiveSection] = useState("hero");
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [contactName, setContactName] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [contactMessage, setContactMessage] = useState("");
   const [contactStatus, setContactStatus] = useState<"idle" | "success" | "error">("idle");
   const [contactError, setContactError] = useState<string | null>(null);
+  const shouldReduceMotion = useReducedMotion();
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   const siteUrl = "https://munna-thakur-software.vercel.app";
   const personId = `${siteUrl}/#person`;
@@ -136,11 +210,48 @@ export default function Portfolio() {
         return false;
       });
       if (current) setActiveSection(current);
+
+      const doc = document.documentElement;
+      const scrollTop = doc.scrollTop;
+      const height = doc.scrollHeight - doc.clientHeight;
+      const progress = height > 0 ? scrollTop / height : 0;
+      setScrollProgress(progress);
     };
 
     window.addEventListener("scroll", handleScroll);
+    handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMobileNavOpen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
+
+  const navSections = ["about", "experience", "projects", "skills", "blogs", "education", "contact"] as const;
+  const revealProps: Record<string, unknown> = shouldReduceMotion
+    ? {}
+    : {
+        initial: { opacity: 0, y: 18 },
+        whileInView: { opacity: 1, y: 0 },
+        viewport: { once: true, margin: "-80px" },
+        transition: { duration: 0.6, ease: "easeOut" },
+      };
+
+  const skillIconByName: Record<string, React.ElementType> = {
+    "Core Expertise": Terminal,
+    "Frameworks & Libraries": Layers,
+    "UI Engineering": Code2,
+    "Performance & Observability": Gauge,
+    "APIs & Data": Network,
+    "Real-time & Media": Cpu,
+    "Testing, Tooling & DevOps": TestTube2,
+    "System Design": Star,
+    "AI-Assisted Development": Wand2,
+  };
 
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100 selection:bg-blue-500/30">
@@ -149,25 +260,117 @@ export default function Portfolio() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(blogItemListLd) }}
       />
+      {/* Scroll progress */}
+      <div className="fixed top-0 left-0 right-0 z-[60] h-[2px] bg-white/5">
+        <div
+          className="h-full bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400"
+          style={{ transformOrigin: "0 50%", transform: `scaleX(${scrollProgress})` }}
+        />
+      </div>
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 flex justify-center p-6">
-        <div className="glass px-8 py-3 rounded-full flex items-center gap-8 text-sm font-medium">
-          {["about", "experience", "projects", "skills", "blogs", "education", "contact"].map((section) => (
-            <a
-              key={section}
-              href={`#${section}`}
-              className={`capitalize transition-colors hover:text-blue-400 ${
-                activeSection === section ? "text-blue-400" : "text-zinc-400"
-              }`}
-            >
-              {section}
+      <nav className="fixed top-0 left-0 right-0 z-50 flex justify-center px-4 py-4 md:p-6">
+        <div className="w-full max-w-4xl">
+          {/* Desktop */}
+          <div className="hidden md:flex glass px-8 py-3 rounded-full items-center justify-center gap-8 text-sm font-medium">
+            {navSections.map((section) => (
+              <a
+                key={section}
+                href={`#${section}`}
+                className={`capitalize transition-colors hover:text-blue-400 ${
+                  activeSection === section ? "text-blue-400" : "text-zinc-400"
+                }`}
+              >
+                {section}
+              </a>
+            ))}
+          </div>
+
+          {/* Mobile */}
+          <div className="md:hidden glass px-4 py-3 rounded-full flex items-center justify-between">
+            <a href="#about" className="font-semibold text-zinc-200">
+              Munna
             </a>
-          ))}
+            <button
+              type="button"
+              aria-label={mobileNavOpen ? "Close menu" : "Open menu"}
+              aria-expanded={mobileNavOpen}
+              onClick={() => setMobileNavOpen((v) => !v)}
+              className="p-2 rounded-full hover:bg-white/10 transition-colors"
+            >
+              {mobileNavOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
         </div>
       </nav>
 
+      {/* Mobile menu overlay */}
+      {mobileNavOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm md:hidden"
+          onClick={() => setMobileNavOpen(false)}
+          role="presentation"
+        >
+          <div
+            className="absolute top-20 left-4 right-4 glass rounded-3xl p-4"
+            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-label="Mobile navigation"
+          >
+            <div className="grid grid-cols-2 gap-2">
+              {navSections.map((section) => (
+                <a
+                  key={section}
+                  href={`#${section}`}
+                  onClick={() => setMobileNavOpen(false)}
+                  className={`px-4 py-3 rounded-2xl text-sm font-semibold capitalize transition-colors ${
+                    activeSection === section
+                      ? "bg-blue-500/15 text-blue-200 border border-blue-500/20"
+                      : "bg-white/5 text-zinc-200 border border-white/10 hover:bg-white/10"
+                  }`}
+                >
+                  {section}
+                </a>
+              ))}
+            </div>
+
+            <div className="mt-4 grid grid-cols-3 gap-2">
+              <a
+                href="https://www.linkedin.com/in/munna-thakur-frontend-developer-2854b5243/"
+                target="_blank"
+                rel="noreferrer"
+                className="px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-zinc-200 text-sm font-semibold flex items-center justify-center gap-2 hover:bg-white/10 transition-colors"
+              >
+                <Linkedin className="w-4 h-4 text-blue-400" />
+                Link
+              </a>
+              <a
+                href="https://github.com/JSMUNNA1"
+                target="_blank"
+                rel="noreferrer"
+                className="px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-zinc-200 text-sm font-semibold flex items-center justify-center gap-2 hover:bg-white/10 transition-colors"
+              >
+                <Github className="w-4 h-4 text-blue-400" />
+                Git
+              </a>
+              <a
+                href="https://dev.to/munna_thakur_2019444f0351"
+                target="_blank"
+                rel="noreferrer"
+                className="px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-zinc-200 text-sm font-semibold flex items-center justify-center gap-2 hover:bg-white/10 transition-colors"
+              >
+                <BookOpen className="w-4 h-4 text-blue-400" />
+                Dev
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Hero Section */}
-      <section id="hero" className="relative h-screen flex flex-col items-center justify-center overflow-hidden px-4">
+      <section
+        id="hero"
+        className="relative min-h-[92vh] md:h-screen flex flex-col items-center justify-center overflow-hidden px-4 pt-24 md:pt-0"
+      >
         {/* Background Gradients */}
         <div className="absolute inset-0 -z-10">
           <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/20 blur-[120px] rounded-full animate-pulse" />
@@ -175,9 +378,9 @@ export default function Portfolio() {
         </div>
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           className="text-center"
         >
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-semibold mb-6">
@@ -194,16 +397,29 @@ export default function Portfolio() {
             optimizing Core Web Vitals, and deep-diving into React internals.
           </p>
 
-          <div className="flex flex-wrap items-center justify-center gap-4">
+          <motion.div
+            initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            className="flex flex-wrap items-center justify-center gap-4"
+          >
             <a
               href="#projects"
-              className="px-8 py-4 rounded-full bg-zinc-100 text-zinc-950 font-semibold hover:bg-white transition-all transform hover:scale-105"
+              className="px-8 py-4 rounded-full bg-zinc-100 text-zinc-950 font-semibold hover:bg-white transition-all transform hover:scale-[1.03] active:scale-[0.99] focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/60"
             >
               View Projects
             </a>
             <a
+              href="https://wa.me/916239402958"
+              className="px-8 py-4 rounded-full bg-emerald-400/15 text-emerald-200 border border-emerald-400/20 font-semibold hover:bg-emerald-400/20 transition-all transform hover:scale-[1.03] active:scale-[0.99] focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/60 flex items-center gap-2"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Hire Me <MessageCircle className="w-4 h-4" />
+            </a>
+            <a
               href="/munna-resume.pdf"
-              className="px-8 py-4 rounded-full glass font-semibold hover:bg-white/10 transition-all transform hover:scale-105 flex items-center gap-2"
+              className="px-8 py-4 rounded-full glass font-semibold hover:bg-white/10 transition-all transform hover:scale-[1.03] active:scale-[0.99] focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/60 flex items-center gap-2"
               target="_blank"
               rel="noreferrer"
             >
@@ -211,9 +427,39 @@ export default function Portfolio() {
             </a>
             <a
               href="#contact"
-              className="px-8 py-4 rounded-full glass font-semibold hover:bg-white/10 transition-all transform hover:scale-105 flex items-center gap-2"
+              className="px-8 py-4 rounded-full glass font-semibold hover:bg-white/10 transition-all transform hover:scale-[1.03] active:scale-[0.99] focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/60 flex items-center gap-2"
             >
               Contact <ChevronRight className="w-4 h-4" />
+            </a>
+          </motion.div>
+
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3 text-sm">
+            <a
+              href="https://www.linkedin.com/in/munna-thakur-frontend-developer-2854b5243/"
+              target="_blank"
+              rel="noreferrer"
+              className="glass px-4 py-2 rounded-full hover:bg-white/10 transition-colors flex items-center gap-2 text-zinc-300"
+            >
+              <Linkedin className="w-4 h-4 text-blue-400" />
+              LinkedIn
+            </a>
+            <a
+              href="https://github.com/JSMUNNA1"
+              target="_blank"
+              rel="noreferrer"
+              className="glass px-4 py-2 rounded-full hover:bg-white/10 transition-colors flex items-center gap-2 text-zinc-300"
+            >
+              <Github className="w-4 h-4 text-blue-400" />
+              GitHub
+            </a>
+            <a
+              href="https://dev.to/munna_thakur_2019444f0351"
+              target="_blank"
+              rel="noreferrer"
+              className="glass px-4 py-2 rounded-full hover:bg-white/10 transition-colors flex items-center gap-2 text-zinc-300"
+            >
+              <BookOpen className="w-4 h-4 text-blue-400" />
+              DEV.to
             </a>
           </div>
         </motion.div>
@@ -230,7 +476,7 @@ export default function Portfolio() {
       </section>
 
       {/* About Section */}
-      <section id="about" className="py-32 px-4 max-w-7xl mx-auto">
+      <motion.section id="about" className="py-24 md:py-32 px-4 max-w-7xl mx-auto" {...revealProps}>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
@@ -241,7 +487,7 @@ export default function Portfolio() {
             <div className="space-y-4">
               <h2 className="font-display text-4xl font-bold">Crafting Excellence Through Code</h2>
               <p className="text-zinc-400 text-lg leading-relaxed">
-                Software Engineer with 1.8 years of experience building high-scale, production-grade web
+                Software Engineer with 2+ years of experience building high-scale, production-grade web
                 applications serving 10,000+ DAU. I focus on React internals, frontend system design,
                 and performance optimization—delivering 40%+ improvements through algorithmic and
                 architectural refactoring.
@@ -286,10 +532,10 @@ export default function Portfolio() {
             </div>
           </motion.div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Experience Section */}
-      <section id="experience" className="py-32 px-4 max-w-7xl mx-auto">
+      <motion.section id="experience" className="py-24 md:py-32 px-4 max-w-7xl mx-auto" {...revealProps}>
         <div className="flex flex-col md:flex-row gap-20">
           <div className="md:w-1/3 space-y-4">
             <h2 className="font-display text-4xl font-bold">Career Journey</h2>
@@ -330,10 +576,10 @@ export default function Portfolio() {
             ))}
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Projects Section */}
-      <section id="projects" className="py-32 px-4 bg-zinc-900/30">
+      <motion.section id="projects" className="py-24 md:py-32 px-4 bg-zinc-900/30" {...revealProps}>
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
             <div className="space-y-4">
@@ -360,7 +606,7 @@ export default function Portfolio() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="group glass rounded-3xl overflow-hidden hover:border-blue-500/30 transition-all"
+                className="group glass rounded-3xl overflow-hidden hover:border-blue-500/30 transition-all hover:-translate-y-1"
               >
                 <div className="p-8 space-y-4">
                   <div className="flex flex-wrap gap-2">
@@ -379,10 +625,10 @@ export default function Portfolio() {
             ))}
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Skills Section */}
-      <section id="skills" className="py-32 px-4 max-w-7xl mx-auto">
+      <motion.section id="skills" className="py-24 md:py-32 px-4 max-w-7xl mx-auto" {...revealProps}>
         <div className="text-center mb-20 space-y-4">
           <h2 className="font-display text-4xl font-bold">Technical Arsenal</h2>
           <p className="text-zinc-400 max-w-2xl mx-auto">
@@ -390,7 +636,13 @@ export default function Portfolio() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <motion.div
+          initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+        >
           {skills.map((skill, i) => (
             <motion.div
               key={i}
@@ -398,14 +650,16 @@ export default function Portfolio() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="glass p-8 rounded-3xl space-y-6"
+              className="glass p-8 rounded-3xl space-y-6 hover:-translate-y-1 transition-transform"
             >
-              <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center">
-                {i === 0 && <Terminal className="w-6 h-6 text-blue-400" />}
-                {i === 1 && <Cpu className="w-6 h-6 text-blue-400" />}
-                {i === 2 && <Layers className="w-6 h-6 text-blue-400" />}
-                {i === 3 && <Star className="w-6 h-6 text-blue-400" />}
-              </div>
+              {(() => {
+                const Icon = skillIconByName[skill.name] ?? Terminal;
+                return (
+                  <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center">
+                    <Icon className="w-6 h-6 text-blue-400" />
+                  </div>
+                );
+              })()}
               <h3 className="text-xl font-bold">{skill.name}</h3>
               <ul className="space-y-3">
                 {skill.items.map((item, j) => (
@@ -417,11 +671,11 @@ export default function Portfolio() {
               </ul>
             </motion.div>
           ))}
-        </div>
-      </section>
+        </motion.div>
+      </motion.section>
 
       {/* Blogs Section */}
-      <section id="blogs" className="py-32 px-4 max-w-7xl mx-auto">
+      <motion.section id="blogs" className="py-24 md:py-32 px-4 max-w-7xl mx-auto" {...revealProps}>
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
           <div className="space-y-4">
             <h2 className="font-display text-4xl font-bold">Blogs</h2>
@@ -455,7 +709,7 @@ export default function Portfolio() {
               href={post.url}
               target="_blank"
               rel="noreferrer"
-              className="group glass p-8 rounded-3xl hover:border-blue-500/30 transition-all block"
+              className="group glass p-8 rounded-3xl hover:border-blue-500/30 transition-all block hover:-translate-y-1"
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="space-y-3">
@@ -482,10 +736,10 @@ export default function Portfolio() {
             </a>
           ))}
         </div>
-      </section>
+      </motion.section>
 
       {/* Education & Impact Section */}
-      <section id="education" className="py-32 px-4 bg-zinc-900/30">
+      <motion.section id="education" className="py-24 md:py-32 px-4 bg-zinc-900/30" {...revealProps}>
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -533,10 +787,10 @@ export default function Portfolio() {
             </ul>
           </motion.div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Contact Section */}
-      <section id="contact" className="py-32 px-4">
+      <motion.section id="contact" className="py-24 md:py-32 px-4" {...revealProps}>
         <div className="max-w-5xl mx-auto glass rounded-[40px] p-12 md:p-20 relative overflow-hidden">
           {/* Background Glow */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/20 blur-[100px] -translate-y-1/2 translate-x-1/2" />
@@ -564,11 +818,51 @@ export default function Portfolio() {
                   </div>
                   +91 62394 02958
                 </a>
+                <a
+                  href="https://wa.me/916239402958"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-4 text-xl font-medium hover:text-emerald-300 transition-colors"
+                >
+                  <div className="w-12 h-12 rounded-full glass flex items-center justify-center">
+                    <MessageCircle className="w-5 h-5" />
+                  </div>
+                  WhatsApp: Hire me
+                </a>
                 <div className="flex items-center gap-4 text-xl font-medium text-zinc-300">
                   <div className="w-12 h-12 rounded-full glass flex items-center justify-center">
                     <MapPin className="w-5 h-5" />
                   </div>
                   Ahmedabad, Gujarat, India
+                </div>
+                <div className="flex flex-wrap gap-3 pt-2">
+                  <a
+                    href="https://www.linkedin.com/in/munna-thakur-frontend-developer-2854b5243/"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="glass px-4 py-2 rounded-full hover:bg-white/10 transition-colors flex items-center gap-2 text-zinc-300"
+                  >
+                    <Linkedin className="w-4 h-4 text-blue-400" />
+                    LinkedIn
+                  </a>
+                  <a
+                    href="https://github.com/JSMUNNA1"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="glass px-4 py-2 rounded-full hover:bg-white/10 transition-colors flex items-center gap-2 text-zinc-300"
+                  >
+                    <Github className="w-4 h-4 text-blue-400" />
+                    GitHub
+                  </a>
+                  <a
+                    href="https://dev.to/munna_thakur_2019444f0351"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="glass px-4 py-2 rounded-full hover:bg-white/10 transition-colors flex items-center gap-2 text-zinc-300"
+                  >
+                    <BookOpen className="w-4 h-4 text-blue-400" />
+                    DEV.to
+                  </a>
                 </div>
                 <a
                   href="/munna-resume.pdf"
@@ -677,7 +971,7 @@ export default function Portfolio() {
             </form>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Footer */}
       <footer className="py-12 px-4 border-t border-white/5 text-center">
