@@ -254,7 +254,7 @@ export default function Portfolio() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 selection:bg-blue-500/30">
+    <div className="min-h-screen bg-zinc-950 text-zinc-100 selection:bg-blue-500/30 overflow-x-hidden">
       <Script
         id="ld-blogs-itemlist"
         type="application/ld+json"
@@ -791,30 +791,36 @@ export default function Portfolio() {
 
       {/* Contact Section */}
       <motion.section id="contact" className="py-24 md:py-32 px-4" {...revealProps}>
-        <div className="max-w-5xl mx-auto glass rounded-[40px] p-12 md:p-20 relative overflow-hidden">
+        <div className="max-w-5xl mx-auto glass rounded-[40px] p-6 sm:p-10 md:p-20 relative overflow-hidden">
           {/* Background Glow */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/20 blur-[100px] -translate-y-1/2 translate-x-1/2" />
           
-          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-16">
+          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16">
             <div className="space-y-8">
-              <h2 className="font-display text-5xl font-bold leading-tight">
+              <h2 className="font-display text-4xl sm:text-5xl font-bold leading-tight">
                 Let's Build <br />
                 Something <span className="text-gradient">Epic</span>
               </h2>
-              <p className="text-zinc-400 text-lg">
+              <p className="text-zinc-400 text-base sm:text-lg">
                 For roles, freelance work, or collaborations—reach out and I’ll respond quickly.
               </p>
               
               <div className="space-y-4 pt-8">
-                <a href="mailto:munna.thakur.dev@gmail.com" className="flex items-center gap-4 text-xl font-medium hover:text-blue-400 transition-colors">
-                  <div className="w-12 h-12 rounded-full glass flex items-center justify-center">
-                    <Mail className="w-5 h-5" />
+                <a
+                  href="mailto:munna.thakur.dev@gmail.com"
+                  className="flex items-center gap-4 text-base sm:text-lg font-medium hover:text-blue-400 transition-colors break-all min-w-0"
+                >
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full glass flex items-center justify-center shrink-0">
+                    <Mail className="w-4 h-4 sm:w-5 sm:h-5" />
                   </div>
                   munna.thakur.dev@gmail.com
                 </a>
-                <a href="tel:+916239402958" className="flex items-center gap-4 text-xl font-medium hover:text-blue-400 transition-colors">
-                  <div className="w-12 h-12 rounded-full glass flex items-center justify-center">
-                    <Phone className="w-5 h-5" />
+                <a
+                  href="tel:+916239402958"
+                  className="flex items-center gap-4 text-base sm:text-lg font-medium hover:text-blue-400 transition-colors min-w-0"
+                >
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full glass flex items-center justify-center shrink-0">
+                    <Phone className="w-4 h-4 sm:w-5 sm:h-5" />
                   </div>
                   +91 62394 02958
                 </a>
@@ -822,16 +828,16 @@ export default function Portfolio() {
                   href="https://wa.me/916239402958"
                   target="_blank"
                   rel="noreferrer"
-                  className="flex items-center gap-4 text-xl font-medium hover:text-emerald-300 transition-colors"
+                  className="flex items-center gap-4 text-base sm:text-lg font-medium hover:text-emerald-300 transition-colors min-w-0"
                 >
-                  <div className="w-12 h-12 rounded-full glass flex items-center justify-center">
-                    <MessageCircle className="w-5 h-5" />
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full glass flex items-center justify-center shrink-0">
+                    <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5" />
                   </div>
                   WhatsApp: Hire me
                 </a>
-                <div className="flex items-center gap-4 text-xl font-medium text-zinc-300">
-                  <div className="w-12 h-12 rounded-full glass flex items-center justify-center">
-                    <MapPin className="w-5 h-5" />
+                <div className="flex items-center gap-4 text-base sm:text-lg font-medium text-zinc-300 min-w-0">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full glass flex items-center justify-center shrink-0">
+                    <MapPin className="w-4 h-4 sm:w-5 sm:h-5" />
                   </div>
                   Ahmedabad, Gujarat, India
                 </div>
