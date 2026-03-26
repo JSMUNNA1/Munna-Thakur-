@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
+import { Analytics } from "@vercel/analytics/next"
 import {
   Mail,
   Phone,
